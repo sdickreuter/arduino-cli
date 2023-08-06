@@ -38,32 +38,41 @@ class ArduinocliCommand(sublime_plugin.WindowCommand):
         
     def go(self, options):
 
-        compiler_path = get_setting('path')
-        if "?" in compiler_path or "*" in compiler_path:
-            compiler_paths = glob.glob(compiler_path)
-            assert len(compiler_paths) == 1, "There should be only one compiler matching the given path (See arduino-cli (Platform).sublime-settings file"
-            compiler_path = compiler_paths[0]
+        exec_path = get_setting('path')
+        if "?" in exec_path or "*" in exec_path:
+            exec_paths = glob.glob(exec_path)
+            assert len(exec_paths) == 1, "There should be only one compiler matching the given path (See arduino-cli (Platform).sublime-settings file"
+            exec_path = exec_paths[0]
 
-        args = [compiler_path]
+        args = [exec_path]
+        args += ["--no-color"]
 
         board = get_setting('board')
-        if board:
-            args += ["--board", board]
-
         port = get_setting('port')
-        if (port and "--verify" not in options['cmd']):
-            args += ["--port", port]
+        libs = get_setting("libraries")
 
-        sketchbook_path = get_setting('sketchbook.path')
-        if sketchbook_path:
-            args += ["--pref", "sketchbook.path={}".format(sketchbook_path)]
+        if options["cmd"][0] == "build":
+            args += ["compile"]
+            args += ["--fqbn", board]
+            for lib in libs:
+                args += ["--library", lib]
+
+        elif options["cmd"][0] == "upload":
+            args += ["upload"]
+            args += ["--fqbn", board]
+            args += ["-p", port]
+
+        elif options["cmd"][0] == "monitor":
+            args += ["monitor"]
+            args += ["-p", port]
 
         cmd = options['cmd']
         
         if not self._is_ino_file():
             self._set_ino_file(cmd)
         
-        args += cmd
+        print(options['cmd'])
+        print(args)
 
         options['cmd'] = args
 

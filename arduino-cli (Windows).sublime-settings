@@ -1,3 +1,4 @@
 {
-	"path" : "C:\\Program Files*\\Arduino\\arduino_debug.exe"
+	// TODO: find correct path for arduino-cli
+	//"path" : "C:\\Program Files*\\Arduino\\arduino_debug.exe"
 }

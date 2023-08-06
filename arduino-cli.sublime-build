@@ -1,21 +1,25 @@
 {
     "target": "arduinocli",
-    "cmd": ["--verify", "$file"],
-    "shell": false,
-
     "selector": "source.arduino",
+    "shell": false,
+    "cancel": {"kill": true},
 
     // doesnt seem to work yet. might be impossible as arduino doesnt return full path name of file
-    "file_regex": "b'(\\w*.\\w*):(\\d*):(\\d*):(.*)",
+    "file_regex": "^(?'filename'.*.ino).*$",
+    "line_regex": "^.*:(?'line number'[0-9]+)(: )(?'error message'.*)$",
 
     "variants": [
 
-        { "name": "just build",
-          "cmd": ["--verify", "$file"],
+        { "name": "build",
+          "cmd": ["build", "$file"],
         },
 
-        { "name": "build and upload",
-          "cmd": ["--upload", "$file"],
+        { "name": "upload",
+          "cmd": ["upload", "$file"],
+        },
+
+        { "name": "monitor",
+          "cmd": ["monitor"],
         },
 
     ]
